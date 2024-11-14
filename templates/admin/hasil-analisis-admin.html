@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Aplikasi Analisis Sentimen - Hasil Analisis</title>
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="/static/css/simplebar.css">
+    <!-- Fonts CSS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="/static/css/feather.css">
+    <link rel="stylesheet" href="/static/css/dataTables.bootstrap4.css">
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="/static/css/daterangepicker.css">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="/static/css/app-light.css" id="lightTheme">
+</head>
+
+<body class="vertical  light  ">
+    <div class="wrapper">
+
+        <!-- Navbar --> {% include 'admin/layouts/_navbar_admin.html' %}
+        <!-- Sidebar --> {% include 'admin/layouts/_sidebar_admin.html' %}
+
+        <main role="main" class="main-content">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-6 d-flex">
+                                <h2 class="mb-2 page-title">Hasil Analisis</h2>
+                            </div>
+                            <!-- <div class="col-6 d-flex justify-content-end">
+                                <form action="/implementasihasil" method="post" id="metodeForm">
+                                    <button type="submit" class="file-upload-browse btn mb-2 btn-outline-success"
+                                        id="metodeButton">
+                                        <span class="fe fe-slack fe-16 mr-2"></span>Proses Random Forest
+                                    </button>
+                                </form>
+                            </div> -->
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4">Model Random Forest</h2>
+                                        <p class="mb-1"><strong>Akurasi</strong></p>
+                                        <div class="progress mb-3">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ accuracy }}%;"
+                                                aria-valuenow="{{ accuracy }}" aria-valuemin="0" aria-valuemax="100">
+                                                {{ accuracy }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4">Classification Report</h2>
+                                        <img src="{{ url_for('static', filename='images/classification_report.png') }}" alt="Classification Report" class="img-fluid">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div> -->
+
+                        <!-- <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4">Confusion Matrix</h2>
+                                        <div class="text-center">
+                                            <img src="{{ url_for('static', filename='images/confusion_matrix.png') }}"
+                                                alt="Confusion Matrix" class="img-fluid" style="max-width: 70%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4 text-left">WordCloud Sentimen Positif</h2>
+                                        <div class="text-center">
+                                            <figure class="figure">
+                                                <img src="{{ url_for('static', filename=wordcloud_images['positive']) }}"
+                                                    alt="WordCloud Positif" class="img-fluid" style="max-width: 100%;">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4 text-left">WordCloud Sentimen Negatif</h2>
+                                        <div class="text-center">
+                                            <figure class="figure">
+                                                <img src="{{ url_for('static', filename=wordcloud_images['negative']) }}"
+                                                    alt="WordCloud Negatif" class="img-fluid" style="max-width: 100%;">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row my-4">
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <h2 class="h4 text-muted mb-4 text-left">WordCloud Sentimen Netral</h2>
+                                        <div class="text-center">
+                                            <figure class="figure">
+                                                <img src="{{ url_for('static', filename=wordcloud_images['neutral']) }}"
+                                                    alt="WordCloud Netral" class="img-fluid" style="max-width: 100%;">
+                                            </figure>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+        </main> <!-- main -->
+    </div> <!-- .wrapper -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/popper.min.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/simplebar.min.js"></script>
+    <script src='/static/js/daterangepicker.js'></script>
+    <script src='/static/js/jquery.stickOnScroll.js'></script>
+    <script src="/static/js/tinycolor-min.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src='/static/js/jquery.dataTables.min.js'></script>
+    <script src='/static/js/dataTables.bootstrap4.min.js'></script>
+    <script src='/static/js/file-upload.js'></script>
+    <script>
+        $('#dataTable-1').DataTable({
+            autoWidth: true,
+            "lengthMenu": [
+                [16, 32, 64, -1],
+                [16, 32, 64, "All"]
+            ]
+        });
+    </script>
+    <script src="/static/js/apps.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56159088-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-56159088-1');
+    </script>
+
+
+</body>
+
+</html>

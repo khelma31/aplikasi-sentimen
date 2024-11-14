@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+    <title>Aplikasi Analisis Sentimen - Data Training</title>
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="/static/css/simplebar.css">
+    <!-- Fonts CSS -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="/static/css/feather.css">
+    <link rel="stylesheet" href="/static/css/dataTables.bootstrap4.css">
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="/static/css/daterangepicker.css">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="/static/css/app-light.css" id="lightTheme">
+    <!-- Sweet Alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="vertical  light  ">
+    <div class="wrapper">
+
+        <!-- Navbar --> {% include 'admin/layouts/_navbar_admin.html' %}
+        <!-- Sidebar --> {% include 'admin/layouts/_sidebar_admin.html' %}
+
+        <main role="main" class="main-content">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-6 d-flex">
+                                <h2 class="mb-2 page-title">Klasifikasi Data Training</h2>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <form action="/labelling?status=label_success" method="post" id="labellingForm">
+                                    <button type="submit" class="file-upload-browse btn mb-2 btn-outline-dark"
+                                        id="labellingButton">
+                                        <span class="fe fe-tool fe-16 mr-2"></span>Proses Labelling
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row my-4">
+                            <!-- Small table -->
+                            <div class="col-md-12">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <!-- table -->
+                                        <table class="table datatables" id="dataTable-1">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Text</th>
+                                                    <th>Label</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% if data %}
+                                                {% for row in data %}
+                                                <tr>
+                                                    <td>{{ loop.index }}</td>
+                                                    <td>{{ row['full_text'] }}</td>
+                                                    <td>{{ row['label'] }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% else %}
+                                                <tr>
+                                                    <td colspan="6" class="text-center">No data available</td>
+                                                </tr>
+                                                {% endif %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div> <!-- simple table -->
+                        </div> <!-- end section -->
+                    </div> <!-- .col-12 -->
+                </div> <!-- .row -->
+            </div> <!-- .container-fluid -->
+        </main> <!-- main -->
+    </div> <!-- .wrapper -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/popper.min.js"></script>
+    <script src="/static/js/moment.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/simplebar.min.js"></script>
+    <script src='/static/js/daterangepicker.js'></script>
+    <script src='/static/js/jquery.stickOnScroll.js'></script>
+    <script src="/static/js/tinycolor-min.js"></script>
+    <script src="/static/js/config.js"></script>
+    <script src='/static/js/jquery.dataTables.min.js'></script>
+    <script src='/static/js/dataTables.bootstrap4.min.js'></script>
+    <script src='/static/js/file-upload.js'></script>
+    <script>
+        $('#dataTable-1').DataTable({
+            autoWidth: true,
+            "lengthMenu": [
+                [16, 32, 64, -1],
+                [16, 32, 64, "All"]
+            ]
+        });
+    </script>
+    <script src="/static/js/apps.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56159088-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-56159088-1');
+    </script>
+
+    <script>
+        // Cek apakah ada parameter `status` di URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        // Tampilkan Sweet Alert berdasarkan status preprocess
+        if (status === 'label_success') {
+            Swal.fire({
+                icon: 'success',
+                title: 'Labelling berhasil dilakukan!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    </script>
+
+    <script>
+        // Tambahkan event listener untuk menampilkan loading
+        document.getElementById("labellingForm").onsubmit = function () {
+            // Mengubah teks tombol
+            const button = document.getElementById("labellingButton");
+            button.disabled = true;
+            button.innerHTML = "Sedang Memproses...";
+
+            // Menampilkan overlay loading
+            document.getElementById("loadingOverlay").style.display = "block";
+        };
+    </script>
+
+</body>
+
+</html>

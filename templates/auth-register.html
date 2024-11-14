@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.ico">
+  <title>Aplikasi Analisis Sentimen - Data Sentimen</title>
+  <!-- Simple bar CSS -->
+  <link rel="stylesheet" href="/static/css/simplebar.css">
+  <!-- Fonts CSS -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <!-- Icons CSS -->
+  <link rel="stylesheet" href="/static/css/feather.css">
+  <link rel="stylesheet" href="/static/css/dataTables.bootstrap4.css">
+  <!-- Date Range Picker CSS -->
+  <link rel="stylesheet" href="/static/css/daterangepicker.css">
+  <!-- App CSS -->
+  <link rel="stylesheet" href="/static/css/app-light.css" id="lightTheme">
+  <!-- Sweet Alert -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body class="light ">
+  <div class="wrapper vh-100">
+    <div class="row align-items-center h-100">
+      <form class="col-lg-6 col-md-8 col-10 mx-auto" method="POST" action="{{ url_for('auth.register') }}">
+
+        <div class="mx-auto text-center my-4">
+          <h2 class="my-3 text-left">Register</h2>
+        </div>
+
+        <div class="form-group">
+          <label for="inputEmail">Email</label>
+          <input type="email" class="form-control" id="inputEmail" name="email" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="firstname">Firstname</label>
+            <input type="text" id="firstname" class="form-control" id="inputFirst" name="firstname" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="lastname">Lastname</label>
+            <input type="text" id="lastname" class="form-control" id="inputLast" name="lastname" required>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-4">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="inputPassword1">New Password</label>
+              <input type="password" class="form-control" id="inputPassword1" name="password" required>
+            </div>
+
+            <div class="form-group">
+              <label for="inputPassword2">Confirm Password</label>
+              <input type="password" class="form-control" id="inputPassword2" name="confirm_password" required>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-muted text-left">
+          Already have an account? <a href="/login">Sign in here!</a>
+        </p>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <p class="mt-5 mb-3 text-muted text-center">© 2024</p>
+
+      </form>
+    </div>
+
+  </div>
+  <script src="/static/js/jquery.min.js"></script>
+  <script src="/static/js/popper.min.js"></script>
+  <script src="/static/js/moment.min.js"></script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <script src="/static/js/simplebar.min.js"></script>
+  <script src='/static/js/daterangepicker.js'></script>
+  <script src='/static/js/jquery.stickOnScroll.js'></script>
+  <script src="/static/js/tinycolor-min.js"></script>
+  <script src="/static/js/config.js"></script>
+  <script src="/static/js/apps.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-56159088-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'UA-56159088-1');
+  </script>
+
+</body>
+
+</html>
+</body>
+
+</html>
