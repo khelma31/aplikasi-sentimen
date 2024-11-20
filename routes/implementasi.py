@@ -92,9 +92,9 @@ def implementasihasilSuper():
     # =========================================== WordCloud ============================================
     
     # Mengambil teks untuk kelas 'positive', 'negative', 'neutral'
-    positive_text = ' '.join(df[df['label'] == 'Positif']['preprocessing_text'])
-    negative_text = ' '.join(df[df['label'] == 'Negatif']['preprocessing_text'])
-    neutral_text = ' '.join(df[df['label'] == 'Netral']['preprocessing_text'])
+    positive_text = ' '.join(df[df['label'] == 'positif']['preprocessing_text'])
+    negative_text = ' '.join(df[df['label'] == 'negatif']['preprocessing_text'])
+    neutral_text = ' '.join(df[df['label'] == 'netral']['preprocessing_text'])
 
     # Membuat WordCloud untuk setiap kelas
     positive_wc = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(positive_text)
@@ -193,9 +193,9 @@ def implementasihasilAdmin():
     # =========================================== WordCloud ============================================
     
     # Mengambil teks untuk kelas 'positive', 'negative', 'neutral'
-    positive_text = ' '.join(df[df['label'] == 'Positif']['preprocessing_text'])
-    negative_text = ' '.join(df[df['label'] == 'Negatif']['preprocessing_text'])
-    neutral_text = ' '.join(df[df['label'] == 'Netral']['preprocessing_text'])
+    positive_text = ' '.join(df[df['label'] == 'positif']['preprocessing_text'])
+    negative_text = ' '.join(df[df['label'] == 'negatif']['preprocessing_text'])
+    neutral_text = ' '.join(df[df['label'] == 'netral']['preprocessing_text'])
 
     # Membuat WordCloud untuk setiap kelas
     positive_wc = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(positive_text)
@@ -295,9 +295,9 @@ def implementasihasilUser():
     # =========================================== WordCloud ============================================
     
     # Mengambil teks untuk kelas 'positive', 'negative', 'neutral'
-    positive_text = ' '.join(df[df['label'] == 'Positif']['preprocessing_text'])
-    negative_text = ' '.join(df[df['label'] == 'Negatif']['preprocessing_text'])
-    neutral_text = ' '.join(df[df['label'] == 'Netral']['preprocessing_text'])
+    positive_text = ' '.join(df[df['label'] == 'positif']['preprocessing_text'])
+    negative_text = ' '.join(df[df['label'] == 'negatif']['preprocessing_text'])
+    neutral_text = ' '.join(df[df['label'] == 'netral']['preprocessing_text'])
 
     # Membuat WordCloud untuk setiap kelas
     positive_wc = WordCloud(width=800, height=400, background_color='white', colormap='viridis').generate(positive_text)

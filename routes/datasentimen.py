@@ -33,12 +33,12 @@ def datasentimenSuper():
                     
                     # Masukkan data baru ke tabel data_sentimen
                     data_sentimen = [
-                        (row["created_at"], row["username"], row["full_text"])
+                        (row["created_at"], row["username"], row["full_text"], row.get("label", None))
                         for i, row in df.iterrows()
                     ]
                     if data_sentimen:
                         cursor.executemany(
-                            "INSERT INTO data_sentimen (created_at, username, full_text) VALUES (%s, %s, %s)",
+                            "INSERT INTO data_sentimen (created_at, username, full_text, label) VALUES (%s, %s, %s, %s)",
                             data_sentimen,
                         )
                 connection.commit()
@@ -55,7 +55,7 @@ def datasentimenSuper():
     # Ambil data sentimen dari database
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        cursor.execute("SELECT id, created_at, username, full_text FROM data_sentimen")
+        cursor.execute("SELECT id, created_at, username, full_text, label FROM data_sentimen")
         data = cursor.fetchall()
     connection.close()
         

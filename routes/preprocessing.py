@@ -22,7 +22,7 @@ def preprocessingSuper():
     
     with connection.cursor() as cursor:
             # Ambil data sentimen dari database
-            cursor.execute("SELECT created_at, username, full_text FROM data_sentimen")
+            cursor.execute("SELECT created_at, username, full_text, label FROM data_sentimen")
             data_sentimen = cursor.fetchall()
     connection.close()
     
@@ -112,34 +112,34 @@ def preprocessingSuper():
         with connection.cursor() as cursor:
             # Masukkan data klasifikasi
             data_klas = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df.iterrows()
             ]
             if data_klas:
                 cursor.executemany(
-                    "INSERT INTO data_klasifikasi (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_klasifikasi (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_klas,
                 )
             
             # Masukkan data training
             data_train = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_train.iterrows()
             ]
             if data_train:
                 cursor.executemany(
-                    "INSERT INTO data_training (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_training (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_train,
                 )
             
             # Masukkan data testing
             data_test = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_test.iterrows()
             ]
             if data_test:
                 cursor.executemany(
-                    "INSERT INTO data_testing (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_testing (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_test,
                 )
                 
@@ -161,7 +161,7 @@ def preprocessingAdmin():
     
     with connection.cursor() as cursor:
             # Ambil data sentimen dari database
-            cursor.execute("SELECT created_at, username, full_text FROM data_sentimen")
+            cursor.execute("SELECT created_at, username, full_text, label FROM data_sentimen")
             data_sentimen = cursor.fetchall()
     connection.close()
     
@@ -251,34 +251,34 @@ def preprocessingAdmin():
         with connection.cursor() as cursor:
             # Masukkan data klasifikasi
             data_klas = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df.iterrows()
             ]
             if data_klas:
                 cursor.executemany(
-                    "INSERT INTO data_klasifikasi (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_klasifikasi (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_klas,
                 )
             
             # Masukkan data training
             data_train = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_train.iterrows()
             ]
             if data_train:
                 cursor.executemany(
-                    "INSERT INTO data_training (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_training (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_train,
                 )
             
             # Masukkan data testing
             data_test = [
-                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"])
+                (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_test.iterrows()
             ]
             if data_test:
                 cursor.executemany(
-                    "INSERT INTO data_testing (created_at, username, full_text, preprocessing_text) VALUES (%s, %s, %s, %s)",
+                    "INSERT INTO data_testing (created_at, username, full_text, preprocessing_text, label) VALUES (%s, %s, %s, %s, %s)",
                             data_test,
                 )
                 

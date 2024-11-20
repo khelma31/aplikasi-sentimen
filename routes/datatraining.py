@@ -34,7 +34,7 @@ def klastrainingSuper():
         cursor.execute("SELECT full_text, label FROM data_training")
         data = cursor.fetchall()
     connection.close()
-    return render_template("super/klas-data-training-super.html", data=data)
+    return render_template("super/klas-data-training-super.html", status="label_success", data=data)
 
 
 # Admin
