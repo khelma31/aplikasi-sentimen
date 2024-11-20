@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/static/css/simplebar.css">
   <!-- Fonts CSS -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;0,800;0,900&display=swap"
     rel="stylesheet">
   <!-- Icons CSS -->
   <link rel="stylesheet" href="/static/css/feather.css">
@@ -23,6 +23,8 @@
   <link rel="stylesheet" href="/static/css/app-light.css" id="lightTheme">
   <!-- Sweet Alert -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Tambahkan CSS untuk Toastify -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
 
 <body class="light ">
@@ -33,17 +35,18 @@
 
         <div class="form-group">
           <label for="inputEmail" class="sr-only">Email</label>
-          <input type="email" id="inputEmail" name="email" class="form-control form-control-lg" placeholder="Email" required="" autofocus="">
+          <input type="email" id="inputEmail" name="email" class="form-control form-control-lg" placeholder="Email"
+            required="" autofocus="">
         </div>
 
         <div class="form-group">
           <label for="inputPassword" class="sr-only">Password</label>
-          <input type="password" id="inputPassword" name="password" class="form-control form-control-lg" placeholder="Password"
-            required="">
+          <input type="password" id="inputPassword" name="password" class="form-control form-control-lg"
+            placeholder="Password" required="">
         </div>
 
         <p class="mt-4 text-muted text-left">
-          Don't have an account? <a href="/register">Register Here!</a>
+          Don't have an account? <a href="/register">Register here!</a>
         </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Let me in</button>
         <p class="mt-5 mb-3 text-muted">© 2024</p>
@@ -71,9 +74,29 @@
     gtag('js', new Date());
     gtag('config', 'UA-56159088-1');
   </script>
-</body>
 
-</html>
+  <!-- Tambahkan JavaScript untuk Toastify -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Ambil flash messages dari Flask
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+          Toastify({
+            text: "{{ message }}", // Pesan dari flash
+            duration: 3000,        // Durasi dalam milidetik
+            gravity: "top",        // Lokasi toast (top atau bottom)
+            position: "right",     // Lokasi posisi (left, center, atau right)
+            style: {
+              background: "{{ 'green' if category == 'success' else 'red' }}", // Warna berdasarkan kategori
+            }
+          }).showToast();
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    });
+  </script>
 </body>
 
 </html>

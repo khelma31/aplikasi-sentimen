@@ -84,7 +84,7 @@
                         <strong class="mb-0 text-uppercase text-muted">Total Data</strong>
                       </p>
                       <h3>{{ jumlah_total }}</h3>
-                      <!-- <div id="columnChart"></div> -->
+                      <canvas id="chartBar"></canvas>
                     </div>
                   </div>
                 </div>
@@ -139,6 +139,53 @@
     gtag('js', new Date());
     gtag('config', 'UA-56159088-1');
   </script>
+
+  <script>
+    // Data jumlah training dan testing dari backend Flask
+    const jumlahTraining = {{ jumlah_training }};
+    const jumlahTesting = {{ jumlah_testing }};
+
+    // Konfigurasi diagram batang
+    const ctx = document.getElementById('chartBar').getContext('2d');
+    const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Data Training', 'Data Testing'],
+        datasets: [{
+          label: 'Jumlah Data',
+          data: [jumlahTraining, jumlahTesting],
+          backgroundColor: [
+            'rgba(27, 104, 255, 0.6)', // Warna untuk Data Training
+            'rgba(255, 181, 27, 0.6)' // Warna untuk Data Testing
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 0)',
+            'rgba(255, 99, 132, 0)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Jumlah'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Kategori'
+            }
+          }
+        }
+      }
+    });
+  </script>
+  
 </body>
 
 </html>

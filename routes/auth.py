@@ -79,9 +79,6 @@ def login():
 @auth.route("/logout")
 def logout():
     session.clear()
-    # Hapus data session pengguna
-    # session.pop('user_id', None)
-    # session.pop('email', None)
     
     flash("You have been logged out.", "success")
     return redirect(url_for('auth.login'))

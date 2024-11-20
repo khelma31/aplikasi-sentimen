@@ -37,14 +37,6 @@
                             <div class="col-6 d-flex">
                                 <h2 class="mb-2 page-title">Hasil Analisis</h2>
                             </div>
-                            <!-- <div class="col-6 d-flex justify-content-end">
-                                <form action="/implementasihasil" method="post" id="metodeForm">
-                                    <button type="submit" class="file-upload-browse btn mb-2 btn-outline-success"
-                                        id="metodeButton">
-                                        <span class="fe fe-slack fe-16 mr-2"></span>Proses Random Forest
-                                    </button>
-                                </form>
-                            </div> -->
                         </div>
 
                         <div class="row my-4">
@@ -64,33 +56,36 @@
                             </div>
                         </div>
 
-                        <!-- <div class="row my-4">
-                            <div class="col-md-12">
-                                <div class="card shadow">
+                        <div class="row my-4">
+                            <div class="col-md-6 d-flex align-items-stretch">
+                                <div class="card shadow w-100">
                                     <div class="card-body">
                                         <h2 class="h4 text-muted mb-4">Classification Report</h2>
-                                        <img src="{{ url_for('static', filename='images/classification_report.png') }}" alt="Classification Report" class="img-fluid">
+                                        {% for label, metrics in report.items() if label != 'accuracy' %}
+                                            <p>
+                                                <strong>{{ label.capitalize() }}</strong>:<br>
+                                                - Precision: {{ metrics['precision'] }}%<br>
+                                                - Recall: {{ metrics['recall'] }}%<br>
+                                                - F1-Score: {{ metrics['f1-score'] }}%<br>
+                                            </p>
+                                        {% endfor %}
                                     </div>
                                 </div>
-
                             </div>
-                        </div> -->
-
-                        <!-- <div class="row my-4">
-                            <div class="col-md-12">
-                                <div class="card shadow">
+                            <div class="col-md-6 d-flex align-items-stretch">
+                                <div class="card shadow w-100">
                                     <div class="card-body">
                                         <h2 class="h4 text-muted mb-4">Confusion Matrix</h2>
                                         <div class="text-center">
                                             <img src="{{ url_for('static', filename='images/confusion_matrix.png') }}"
-                                                alt="Confusion Matrix" class="img-fluid" style="max-width: 70%;">
+                                                alt="Confusion Matrix" class="img-fluid" style="max-width: 90%;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <div class="row my-4">
+                        <div class="row mt-2 mb-4">
                             <div class="col-md-12">
                                 <div class="card shadow">
                                     <div class="card-body">

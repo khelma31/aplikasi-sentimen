@@ -40,7 +40,7 @@
                                 <h2 class="mb-2 page-title">Data Sentimen</h2>
                             </div>
                             <div class="col-6 d-flex justify-content-end">
-                                <form action="/datasentimen?status=import_success" method="post"
+                                <form action="/super/datasentimen?status=import_success" method="post"
                                     enctype="multipart/form-data" id="uploadForm">
                                     <input type="file" name="file" class="file-upload-default" style="display: none;"
                                         accept=".csv" required
@@ -50,7 +50,7 @@
                                         <span class="fe fe-file-plus fe-16 mr-2"></span>Import Data CSV File
                                     </button>
                                 </form>
-                                <form action="/hapusdata?status=delete_success" method="post" id="deleteForm">
+                                <form action="/super/hapusdata?status=delete_success" method="post" id="deleteForm">
                                     <button type="submit" class="file-upload-browse btn mb-2 btn-outline-danger"
                                         id="deleteButton">
                                         <span class="fe fe-trash-2 fe-16 mr-2"></span>Hapus Dataset

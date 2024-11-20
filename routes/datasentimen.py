@@ -29,6 +29,7 @@ def datasentimenSuper():
                     cursor.execute("TRUNCATE TABLE data_sentimen")
                     cursor.execute("TRUNCATE TABLE data_training")
                     cursor.execute("TRUNCATE TABLE data_testing")
+                    cursor.execute("TRUNCATE TABLE data_klasifikasi")
                     
                     # Masukkan data baru ke tabel data_sentimen
                     data_sentimen = [
@@ -47,7 +48,7 @@ def datasentimenSuper():
             finally:
                 connection.close()
                 
-            return redirect(url_for("sentimen.datasentimen", status="import_success")) 
+            return redirect(url_for("sentimen.datasentimenSuper", status="import_success")) 
         else:
             return jsonify({"message": "Format file tidak valid."}), 400
         
@@ -83,6 +84,7 @@ def datasentimenAdmin():
                     cursor.execute("TRUNCATE TABLE data_sentimen")
                     cursor.execute("TRUNCATE TABLE data_training")
                     cursor.execute("TRUNCATE TABLE data_testing")
+                    cursor.execute("TRUNCATE TABLE data_klasifikasi")
                     
                     # Masukkan data baru ke tabel data_sentimen
                     data_sentimen = [
@@ -101,7 +103,7 @@ def datasentimenAdmin():
             finally:
                 connection.close()
                 
-            return redirect(url_for("sentimen.datasentimen", status="import_success")) 
+            return redirect(url_for("sentimen.datasentimenAdmin", status="import_success")) 
         else:
             return jsonify({"message": "Format file tidak valid."}), 400
         
