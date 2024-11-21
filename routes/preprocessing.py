@@ -105,7 +105,7 @@ def preprocessingSuper():
         cursor.execute("TRUNCATE TABLE data_testing")
         
     # Bagi data
-    df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
+    df_train, df_test = train_test_split(df, test_size=0.1, random_state=42)
     
     connection = get_db_connection()
     try:

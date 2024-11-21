@@ -9,13 +9,11 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
-import seaborn as sns
-import io
-import base64
 from wordcloud import WordCloud
 import os
 
 from .decorators import role_required
+from RandomForest import RandomForestCustom
 
 implementasi = Blueprint("implementasi", __name__)
 
@@ -53,15 +51,15 @@ def implementasihasilSuper():
     X = tfidf_matrix  # Matriks TF-IDF
     y = df['label']   # Kelas sentimen (label)
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
     # Inisialisasi dan latih model Random Forest
-    rf_model = RandomForestClassifier(random_state=42, n_estimators=100)
-    rf_model.fit(X_train, y_train)  # Melatih model menggunakan data training
+    rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
+    rf_model.fit(X_train.toarray(), y_train.values)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test)  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
@@ -154,15 +152,15 @@ def implementasihasilAdmin():
     X = tfidf_matrix  # Matriks TF-IDF
     y = df['label']   # Kelas sentimen (label)
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
     # Inisialisasi dan latih model Random Forest
-    rf_model = RandomForestClassifier(random_state=42, n_estimators=100)
-    rf_model.fit(X_train, y_train)  # Melatih model menggunakan data training
+    rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
+    rf_model.fit(X_train.toarray(), y_train.values)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test)  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
@@ -256,15 +254,15 @@ def implementasihasilUser():
     X = tfidf_matrix  # Matriks TF-IDF
     y = df['label']   # Kelas sentimen (label)
     
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
     # Inisialisasi dan latih model Random Forest
-    rf_model = RandomForestClassifier(random_state=42, n_estimators=100)
-    rf_model.fit(X_train, y_train)  # Melatih model menggunakan data training
+    rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
+    rf_model.fit(X_train.toarray(), y_train.values)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test)  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
