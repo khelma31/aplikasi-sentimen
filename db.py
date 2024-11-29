@@ -1,7 +1,6 @@
 from flask import current_app
 import pymysql
 
-# Inisialisasi koneksi PyMySQL
 def get_db_connection():
     return pymysql.connect(
         host=current_app.config["MYSQL_HOST"],

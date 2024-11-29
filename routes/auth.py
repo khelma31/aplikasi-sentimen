@@ -15,7 +15,6 @@ def register():
         confirm_password = request.form['confirm_password']
         role = 'user'
         
-        # Cek apakah password sama
         if password != confirm_password:
             flash("Passwords do not match!", "danger")
             return redirect(url_for('auth.register'))
@@ -23,7 +22,6 @@ def register():
         connection = get_db_connection()
         cursor = connection.cursor()
     
-        # Cek apakah email sudah ada di database
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         existing_user = cursor.fetchone()
     
@@ -31,8 +29,6 @@ def register():
             flash("Email is already registered", "danger")
             return redirect(url_for('auth.register'))
     
-        # Simpan user baru ke database dengan hashing
-        # hashed_password = generate_password_hash(password)
         cursor.execute("INSERT INTO users (firstname, lastname, email, password, role) VALUES (%s, %s, %s, %s, %s)", (firstname, lastname, email, password, role))
         connection.commit()
         cursor.close()
@@ -55,13 +51,12 @@ def login():
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
 
-        if user and user['password'] == password:  # Password tanpa hashing
-            session['email'] = email  # Menyimpan email di session
-            session['role'] = user['role']  # Menyimpan role di session
+        if user and user['password'] == password:  
+            session['email'] = email 
+            session['role'] = user['role'] 
             session.permanent = True
             flash("Login successful!", "success")
             
-            # Redirect berdasarkan role
             if user['role'] == 'super':
                 return redirect(url_for('main.indexSuper'))
             elif user['role'] == 'admin':

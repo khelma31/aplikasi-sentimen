@@ -21,7 +21,6 @@ def preprocessingSuper():
     connection = get_db_connection()
     
     with connection.cursor() as cursor:
-            # Ambil data sentimen dari database
             cursor.execute("SELECT created_at, username, full_text, label FROM data_sentimen")
             data_sentimen = cursor.fetchall()
     connection.close()
@@ -29,56 +28,44 @@ def preprocessingSuper():
     df = pd.DataFrame(data_sentimen)
     
     # ================================================================ CLEANING ================================================================ #
-    # Cleaning full_text
+    
     df['created_at'] = pd.to_datetime(df['created_at'])
     df['username'] = df['username'].astype('str')
     df['full_text'] = df['full_text'].astype('str')
     
     def clean_x_text(text):
-        # Menghapus mention
+        
         text = re.sub(r'@[A-Za-z0-9_]+', '', text)
-        # Menghapus hashtag
         text = re.sub(r'#\w+', '', text)
-        # Menghapus retweet indicator
         text = re.sub(r'RT[\s]+', '', text)
-        # Menghapus URL
         text = re.sub(r'https?://\S+', '', text)
-        # Menghapus format tanggal (contoh: 26/8/2024 atau 26.8.2024)
         text = re.sub(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', '', text)
-        # Menghapus karakter selain huruf, angka, dan spasi
         text = re.sub(r'[^A-Za-z0-9 ]', '', text)
-        # Menghapus spasi berlebihan dan menjaga spasi antar kata
         text = re.sub(r'\s+', ' ', text).strip()
     
         return text
     
-    # Mengimplementasikan fungsi cleaning text pada data
     df['cleaned_text'] = df['full_text'].apply(clean_x_text)
 
-    # Melakukan lower case text pada data
     df['cleaned_text'] = df['cleaned_text'].str.lower()
     
-    # Menghapus adanya nilai kosong pada data
     df = df.dropna(subset=['created_at'])
     
     # ================================================================ NORMALISASI ================================================================ #
-    # Membaca file kamus alay
+    
     kamus_alay = pd.read_csv('lexicon/colloquial-indonesian-lexicon.csv', encoding='utf-8')
 
-    # Konversi kamus alay ke dalam bentuk dictionary
     alay_dict = dict(zip(kamus_alay['slang'], kamus_alay['formal']))
 
-    # Fungsi normalisasi menggunakan kamus alay
     def normalisasi(text):
         words = text.split()
         normalized_words = [alay_dict.get(word, word) for word in words]
         return ' '.join(normalized_words)
 
-    # Terapkan normalisasi pada kolom 'full_text'
     df['normalized_text'] = df['cleaned_text'].apply(normalisasi)
     
     # ================================================================ TOKENISASI ================================================================= #
-    # Mendefinisikan fungsi tokenize
+
     def tokenize(text):
         tokens = text.split()
         return tokens
@@ -86,12 +73,14 @@ def preprocessingSuper():
     df['tokenized_text'] = df['normalized_text'].apply(tokenize)
     
     # ================================================================= STOPWORD ================================================================== #
+   
     nltk.download('stopwords')
     stop_words = set(stopwords.words('indonesian'))
 
     df['stopword_text'] = df['tokenized_text'].apply(lambda x: [word for word in x if word not in stop_words])
     
     # ================================================================= STEMMING ================================================================== #
+    
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
 
@@ -104,13 +93,12 @@ def preprocessingSuper():
         cursor.execute("TRUNCATE TABLE data_training")
         cursor.execute("TRUNCATE TABLE data_testing")
         
-    # Bagi data
     df_train, df_test = train_test_split(df, test_size=0.1, random_state=42)
     
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
-            # Masukkan data klasifikasi
+            
             data_klas = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df.iterrows()
@@ -121,7 +109,6 @@ def preprocessingSuper():
                             data_klas,
                 )
             
-            # Masukkan data training
             data_train = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_train.iterrows()
@@ -132,7 +119,6 @@ def preprocessingSuper():
                             data_train,
                 )
             
-            # Masukkan data testing
             data_test = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_test.iterrows()
@@ -146,7 +132,7 @@ def preprocessingSuper():
         connection.commit()
     except Exception as e:
         connection.rollback()
-        print(f"Error occurred: {str(e)}")  # Cetak kesalahan untuk debugging
+        print(f"Error occurred: {str(e)}")
         return jsonify({"message": str(e)}), 500
     finally:
         connection.close()
@@ -160,7 +146,6 @@ def preprocessingAdmin():
     connection = get_db_connection()
     
     with connection.cursor() as cursor:
-            # Ambil data sentimen dari database
             cursor.execute("SELECT created_at, username, full_text, label FROM data_sentimen")
             data_sentimen = cursor.fetchall()
     connection.close()
@@ -168,56 +153,44 @@ def preprocessingAdmin():
     df = pd.DataFrame(data_sentimen)
     
     # ================================================================ CLEANING ================================================================ #
-    # Cleaning full_text
+    
     df['created_at'] = pd.to_datetime(df['created_at'])
     df['username'] = df['username'].astype('str')
     df['full_text'] = df['full_text'].astype('str')
     
     def clean_x_text(text):
-        # Menghapus mention
+        
         text = re.sub(r'@[A-Za-z0-9_]+', '', text)
-        # Menghapus hashtag
         text = re.sub(r'#\w+', '', text)
-        # Menghapus retweet indicator
         text = re.sub(r'RT[\s]+', '', text)
-        # Menghapus URL
         text = re.sub(r'https?://\S+', '', text)
-        # Menghapus format tanggal (contoh: 26/8/2024 atau 26.8.2024)
         text = re.sub(r'\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b', '', text)
-        # Menghapus karakter selain huruf, angka, dan spasi
         text = re.sub(r'[^A-Za-z0-9 ]', '', text)
-        # Menghapus spasi berlebihan dan menjaga spasi antar kata
         text = re.sub(r'\s+', ' ', text).strip()
     
         return text
     
-    # Mengimplementasikan fungsi cleaning text pada data
     df['cleaned_text'] = df['full_text'].apply(clean_x_text)
 
-    # Melakukan lower case text pada data
     df['cleaned_text'] = df['cleaned_text'].str.lower()
     
-    # Menghapus adanya nilai kosong pada data
     df = df.dropna(subset=['created_at'])
     
     # ================================================================ NORMALISASI ================================================================ #
-    # Membaca file kamus alay
+    
     kamus_alay = pd.read_csv('lexicon/colloquial-indonesian-lexicon.csv', encoding='utf-8')
 
-    # Konversi kamus alay ke dalam bentuk dictionary
     alay_dict = dict(zip(kamus_alay['slang'], kamus_alay['formal']))
 
-    # Fungsi normalisasi menggunakan kamus alay
     def normalisasi(text):
         words = text.split()
         normalized_words = [alay_dict.get(word, word) for word in words]
         return ' '.join(normalized_words)
 
-    # Terapkan normalisasi pada kolom 'full_text'
     df['normalized_text'] = df['cleaned_text'].apply(normalisasi)
     
     # ================================================================ TOKENISASI ================================================================= #
-    # Mendefinisikan fungsi tokenize
+
     def tokenize(text):
         tokens = text.split()
         return tokens
@@ -225,12 +198,14 @@ def preprocessingAdmin():
     df['tokenized_text'] = df['normalized_text'].apply(tokenize)
     
     # ================================================================= STOPWORD ================================================================== #
+   
     nltk.download('stopwords')
     stop_words = set(stopwords.words('indonesian'))
 
     df['stopword_text'] = df['tokenized_text'].apply(lambda x: [word for word in x if word not in stop_words])
     
     # ================================================================= STEMMING ================================================================== #
+    
     factory = StemmerFactory()
     stemmer = factory.create_stemmer()
 
@@ -243,13 +218,12 @@ def preprocessingAdmin():
         cursor.execute("TRUNCATE TABLE data_training")
         cursor.execute("TRUNCATE TABLE data_testing")
         
-    # Bagi data 
-    df_train, df_test = train_test_split(df, test_size=0.2, random_state=42)
+    df_train, df_test = train_test_split(df, test_size=0.1, random_state=42)
     
     connection = get_db_connection()
     try:
         with connection.cursor() as cursor:
-            # Masukkan data klasifikasi
+            
             data_klas = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df.iterrows()
@@ -260,7 +234,6 @@ def preprocessingAdmin():
                             data_klas,
                 )
             
-            # Masukkan data training
             data_train = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_train.iterrows()
@@ -271,7 +244,6 @@ def preprocessingAdmin():
                             data_train,
                 )
             
-            # Masukkan data testing
             data_test = [
                 (row["created_at"], row["username"], row["full_text"], row["preprocessing_text"], row["label"])
                         for i, row in df_test.iterrows()
@@ -285,7 +257,7 @@ def preprocessingAdmin():
         connection.commit()
     except Exception as e:
         connection.rollback()
-        print(f"Error occurred: {str(e)}")  # Cetak kesalahan untuk debugging
+        print(f"Error occurred: {str(e)}")
         return jsonify({"message": str(e)}), 500
     finally:
         connection.close()

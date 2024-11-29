@@ -14,24 +14,22 @@ def datasentimenSuper():
     if 'email' not in session:
         return redirect(url_for('auth.login'))
     
-    # Menangani upload / import csv
     if request.method == "POST" and "file" in request.files:
         file = request.files["file"]
 
         if file and file.filename.endswith(".csv"):
-            # Membaca csv menjadi DataFrame
+
             df = pd.read_csv(file)
             
             connection = get_db_connection()
             try:
                 with connection.cursor() as cursor:
-                    # Hapus data sebelumnya pada tabel data_sentimen
+                    
                     cursor.execute("TRUNCATE TABLE data_sentimen")
                     cursor.execute("TRUNCATE TABLE data_training")
                     cursor.execute("TRUNCATE TABLE data_testing")
                     cursor.execute("TRUNCATE TABLE data_klasifikasi")
                     
-                    # Masukkan data baru ke tabel data_sentimen
                     data_sentimen = [
                         (row["created_at"], row["username"], row["full_text"], row.get("label", None))
                         for i, row in df.iterrows()
@@ -52,7 +50,6 @@ def datasentimenSuper():
         else:
             return jsonify({"message": "Format file tidak valid."}), 400
         
-    # Ambil data sentimen dari database
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, created_at, username, full_text, label FROM data_sentimen")
@@ -69,24 +66,22 @@ def datasentimenAdmin():
     if 'email' not in session:
         return redirect(url_for('auth.login'))
     
-    # Menangani upload / import csv
     if request.method == "POST" and "file" in request.files:
         file = request.files["file"]
 
         if file and file.filename.endswith(".csv"):
-            # Membaca csv menjadi DataFrame
+            
             df = pd.read_csv(file)
             
             connection = get_db_connection()
             try:
                 with connection.cursor() as cursor:
-                    # Hapus data sebelumnya pada tabel data_sentimen
+                    
                     cursor.execute("TRUNCATE TABLE data_sentimen")
                     cursor.execute("TRUNCATE TABLE data_training")
                     cursor.execute("TRUNCATE TABLE data_testing")
                     cursor.execute("TRUNCATE TABLE data_klasifikasi")
                     
-                    # Masukkan data baru ke tabel data_sentimen
                     data_sentimen = [
                         (row["created_at"], row["username"], row["full_text"])
                         for i, row in df.iterrows()
@@ -107,7 +102,6 @@ def datasentimenAdmin():
         else:
             return jsonify({"message": "Format file tidak valid."}), 400
         
-    # Ambil data sentimen dari database
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, created_at, username, full_text FROM data_sentimen")
@@ -124,7 +118,6 @@ def datasentimenUser():
     if 'email' not in session:
         return redirect(url_for('auth.login'))
 
-    # Ambil data sentimen dari database
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT id, created_at, username, full_text FROM data_sentimen")

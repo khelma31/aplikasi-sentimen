@@ -3,10 +3,7 @@ import json
 
 from db import get_db_connection
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
@@ -14,6 +11,7 @@ import os
 
 from .decorators import role_required
 from RandomForest import RandomForestCustom
+from TFIDF import compute_tfidf
 
 implementasi = Blueprint("implementasi", __name__)
 
@@ -21,12 +19,10 @@ implementasi = Blueprint("implementasi", __name__)
 @implementasi.route("/super/implementasihasil", methods=["GET", "POST"])
 @role_required('super')
 def implementasihasilSuper():
-    # Cek apakah pengguna sudah login
-    if 'email' not in session:
-        return redirect(url_for('auth.login'))  # Arahkan ke halaman login jika belum login
-
     
-    # Ambil data testing dari database
+    if 'email' not in session:
+        return redirect(url_for('auth.login'))
+    
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT preprocessing_text, label FROM data_klasifikasi")
@@ -39,48 +35,39 @@ def implementasihasilSuper():
 
     documents = df['preprocessing_text'].tolist()
     
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(documents)
-    
-    feature_names = vectorizer.get_feature_names_out()
-    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+    tfidf_results = compute_tfidf(documents)
+    tfidf_df = pd.DataFrame(tfidf_results).fillna(0)
 
     # ================================== Implementasi Random Forest ====================================
 
-    # Pisahkan data untuk training dan testing
-    X = tfidf_matrix  # Matriks TF-IDF
-    y = df['label']   # Kelas sentimen (label)
+    X = tfidf_df.values
+    y = df['label'].values 
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
-    # Inisialisasi dan latih model Random Forest
     rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
-    rf_model.fit(X_train.toarray(), y_train.values)
+    rf_model.fit(X_train, y_train)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test)
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
     report = classification_report(y_test, y_pred, output_dict=True)
     
-    # Hapus macro avg dan weighted avg
     report.pop('macro avg', None)
     report.pop('weighted avg', None)
 
-    # Ubah nilai ke persentase
     for label, metrics in report.items():
-        if isinstance(metrics, dict):  # Pastikan hanya memproses dictionary
+        if isinstance(metrics, dict):
             metrics['precision'] = round(metrics['precision'] * 100, 2)
             metrics['recall'] = round(metrics['recall'] * 100, 2)
-            metrics['f1-score'] = round(metrics['f1-score'] * 100, 2)
     
     # ====================================== Confusion Matrix ==========================================
     
     cm = confusion_matrix(y_test, y_pred, labels=rf_model.classes_)
 
-    # Membuat dan menyimpan confusion matrix
     cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
     cm_display.plot(cmap='Blues', values_format='d')
     confusion_matrix_path = os.path.join("static", "images", "confusion_matrix.png")
@@ -115,19 +102,16 @@ def implementasihasilSuper():
         'neutral': 'images/wordcloud_neutral.png'
     }
 
-    # Kirim hasil ke template
     return render_template("super/hasil-analisis-super.html", accuracy=accuracy, report=report, wordcloud_images=wordcloud_images)
 
 # Admin
 @implementasi.route("/admin/implementasihasil", methods=["GET", "POST"])
 @role_required('admin')
 def implementasihasilAdmin():
-    # Cek apakah pengguna sudah login
-    if 'email' not in session:
-        return redirect(url_for('auth.login'))  # Arahkan ke halaman login jika belum login
-
     
-    # Ambil data testing dari database
+    if 'email' not in session:
+        return redirect(url_for('auth.login'))
+    
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT preprocessing_text, label FROM data_klasifikasi")
@@ -140,48 +124,39 @@ def implementasihasilAdmin():
 
     documents = df['preprocessing_text'].tolist()
     
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(documents)
-    
-    feature_names = vectorizer.get_feature_names_out()
-    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+    tfidf_results = compute_tfidf(documents)
+    tfidf_df = pd.DataFrame(tfidf_results).fillna(0)
 
     # ================================== Implementasi Random Forest ====================================
 
-    # Pisahkan data untuk training dan testing
-    X = tfidf_matrix  # Matriks TF-IDF
-    y = df['label']   # Kelas sentimen (label)
+    X = tfidf_df.values 
+    y = df['label'].values
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
-    # Inisialisasi dan latih model Random Forest
     rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
-    rf_model.fit(X_train.toarray(), y_train.values)
+    rf_model.fit(X_train, y_train)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test) 
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
     report = classification_report(y_test, y_pred, output_dict=True)
     
-    # Hapus macro avg dan weighted avg
     report.pop('macro avg', None)
     report.pop('weighted avg', None)
 
-    # Ubah nilai ke persentase
     for label, metrics in report.items():
-        if isinstance(metrics, dict):  # Pastikan hanya memproses dictionary
+        if isinstance(metrics, dict):
             metrics['precision'] = round(metrics['precision'] * 100, 2)
             metrics['recall'] = round(metrics['recall'] * 100, 2)
-            metrics['f1-score'] = round(metrics['f1-score'] * 100, 2)
     
     # ====================================== Confusion Matrix ==========================================
     
     cm = confusion_matrix(y_test, y_pred, labels=rf_model.classes_)
 
-    # Membuat dan menyimpan confusion matrix
     cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
     cm_display.plot(cmap='Blues', values_format='d')
     confusion_matrix_path = os.path.join("static", "images", "confusion_matrix.png")
@@ -216,7 +191,6 @@ def implementasihasilAdmin():
         'neutral': 'images/wordcloud_neutral.png'
     }
 
-    # Kirim hasil ke template
     return render_template("admin/hasil-analisis-admin.html", accuracy=accuracy, report=report, wordcloud_images=wordcloud_images)
 
 
@@ -224,12 +198,10 @@ def implementasihasilAdmin():
 @implementasi.route("/user/implementasihasil", methods=["GET", "POST"])
 @role_required('user')
 def implementasihasilUser():
-    # Cek apakah pengguna sudah login
-    if 'email' not in session:
-        return redirect(url_for('auth.login'))  # Arahkan ke halaman login jika belum login
 
+    if 'email' not in session:
+        return redirect(url_for('auth.login'))  
     
-    # Ambil data testing dari database
     connection = get_db_connection()
     with connection.cursor() as cursor:
         cursor.execute("SELECT preprocessing_text, label FROM data_klasifikasi")
@@ -242,48 +214,39 @@ def implementasihasilUser():
 
     documents = df['preprocessing_text'].tolist()
     
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform(documents)
-    
-    feature_names = vectorizer.get_feature_names_out()
-    tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=feature_names)
+    tfidf_results = compute_tfidf(documents)
+    tfidf_df = pd.DataFrame(tfidf_results).fillna(0)
 
     # ================================== Implementasi Random Forest ====================================
 
-    # Pisahkan data untuk training dan testing
-    X = tfidf_matrix  # Matriks TF-IDF
-    y = df['label']   # Kelas sentimen (label)
+    X = tfidf_df.values  
+    y = df['label'].values 
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
     
-    # Inisialisasi dan latih model Random Forest
     rf_model = RandomForestCustom(n_estimators=100, max_depth=None)
-    rf_model.fit(X_train.toarray(), y_train.values)
+    rf_model.fit(X_train, y_train)
 
     # ======================================== Evaluasi Model ==========================================
     
-    y_pred = rf_model.predict(X_test.toarray())  # Melakukan prediksi
+    y_pred = rf_model.predict(X_test)  
     
     accuracy = round(accuracy_score(y_test, y_pred) * 100, 2)
     
     report = classification_report(y_test, y_pred, output_dict=True)
     
-    # Hapus macro avg dan weighted avg
     report.pop('macro avg', None)
     report.pop('weighted avg', None)
 
-    # Ubah nilai ke persentase
     for label, metrics in report.items():
-        if isinstance(metrics, dict):  # Pastikan hanya memproses dictionary
+        if isinstance(metrics, dict):
             metrics['precision'] = round(metrics['precision'] * 100, 2)
             metrics['recall'] = round(metrics['recall'] * 100, 2)
-            metrics['f1-score'] = round(metrics['f1-score'] * 100, 2)
     
     # ====================================== Confusion Matrix ==========================================
     
     cm = confusion_matrix(y_test, y_pred, labels=rf_model.classes_)
 
-    # Membuat dan menyimpan confusion matrix
     cm_display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=rf_model.classes_)
     cm_display.plot(cmap='Blues', values_format='d')
     confusion_matrix_path = os.path.join("static", "images", "confusion_matrix.png")
@@ -318,5 +281,4 @@ def implementasihasilUser():
         'neutral': 'images/wordcloud_neutral.png'
     }
 
-    # Kirim hasil ke template
     return render_template("user/hasil-analisis-user.html", accuracy=accuracy, report=report, wordcloud_images=wordcloud_images)
