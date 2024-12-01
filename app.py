@@ -5,6 +5,7 @@ from datetime import timedelta
 from routes import register_blueprints
 
 app = Flask(__name__)
+application = app
 
 # Konfigurasi koneksi ke database
 app.config["MYSQL_HOST"] = "localhost"
